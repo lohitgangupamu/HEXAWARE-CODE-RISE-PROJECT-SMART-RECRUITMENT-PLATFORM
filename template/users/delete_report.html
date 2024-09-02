@@ -1,0 +1,13 @@
+<!-- templates/users/delete_report.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h2>Delete Report</h2>
+  <p>Are you sure you want to delete the report "{{ report.name }}"?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{% url 'custom_reports_dashboard' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}

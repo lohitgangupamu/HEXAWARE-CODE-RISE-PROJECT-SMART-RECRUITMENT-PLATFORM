@@ -1,0 +1,14 @@
+<!-- templates/users/view_report.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h2>Report Details</h2>
+  <p><strong>Name:</strong> {{ report.name }}</p>
+  <p><strong>Date Created:</strong> {{ report.date_created }}</p>
+  <p><strong>Created By:</strong> {{ report.created_by }}</p>
+  <p><strong>Criteria:</strong> {{ report.criteria }}</p>
+  <!-- Display report data or summary here -->
+
+  <a href="{% url 'custom_reports_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+{% endblock %}

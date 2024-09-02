@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Drafts</title>
+</head>
+<body>
+    <h1>Job Drafts</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Department</th>
+                <th>Date Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for draft in drafts %}
+                <tr>
+                    <td>{{ draft.job_title }}</td>
+                    <td>{{ draft.department }}</td>
+                    <td>{{ draft.date_created }}</td>
+                    <td>
+                        <a href="{% url 'edit_job' draft.id %}">Edit</a>
+                        <form action="{% url 'delete_job' draft.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'create_job' %}">Create New Job</a>
+</body>
+</html>

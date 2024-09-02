@@ -1,0 +1,26 @@
+<!-- users/templates/users/update_status.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Update Application Status</h1>
+
+<form method="post" action="{% url 'update_status' application.id %}">
+    {% csrf_token %}
+    <div>
+        <label for="status">New Status:</label>
+        <select name="status" id="status" required>
+            <option value="">Select status</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Hired">Hired</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+    </div>
+    <div>
+        <label for="notes">Notes:</label>
+        <textarea name="notes" id="notes"></textarea>
+    </div>
+    <button type="submit">Update Status</button>
+</form>
+
+{% endblock %}

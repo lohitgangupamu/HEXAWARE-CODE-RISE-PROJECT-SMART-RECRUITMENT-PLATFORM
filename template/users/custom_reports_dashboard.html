@@ -1,0 +1,35 @@
+<!-- templates/users/custom_reports_dashboard.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h2>Custom Reports</h2>
+  <a href="{% url 'create_report' %}" class="btn btn-primary">Create New Report</a>
+
+  <h3>Saved Reports</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Report Name</th>
+        <th>Date Created</th>
+        <th>Created By</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in reports %}
+        <tr>
+          <td>{{ report.name }}</td>
+          <td>{{ report.date_created }}</td>
+          <td>{{ report.created_by }}</td>
+          <td>
+            <a href="{% url 'view_report' report.id %}">View</a>
+            <a href="{% url 'edit_report' report.id %}">Edit</a>
+            <a href="{% url 'delete_report' report.id %}">Delete</a>
+            <a href="{% url 'export_report' report.id %}">Export</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

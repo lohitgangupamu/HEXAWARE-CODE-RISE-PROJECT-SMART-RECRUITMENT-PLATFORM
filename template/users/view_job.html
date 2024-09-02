@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Details</title>
+</head>
+<body>
+    <h1>{{ job.title }}</h1>
+    <p>Department: {{ job.department }}</p>
+    <p>Description: {{ job.description }}</p>
+    <p>Location: {{ job.location }}</p>
+    <p>Employment Type: {{ job.employment_type }}</p>
+    <p>Salary Range: {{ job.salary_range }}</p>
+    <p>Application Deadline: {{ job.application_deadline }}</p>
+    <p>Required Qualifications: {{ job.required_qualifications }}</p>
+    <p>Preferred Qualifications: {{ job.preferred_qualifications }}</p>
+    <p>Responsibilities: {{ job.responsibilities }}</p>
+    <a href="{% url 'published_jobs' %}">Back to Published Jobs</a>
+</body>
+</html>

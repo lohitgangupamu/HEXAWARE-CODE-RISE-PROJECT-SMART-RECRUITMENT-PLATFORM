@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Details</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Report Details</h1>
+    
+    <section>
+        <h2>Report Information</h2>
+        <p><strong>Report Name:</strong> {{ report.name }}</p>
+        <p><strong>Date Created:</strong> {{ report.date_created }}</p>
+        <p><strong>Created By:</strong> {{ report.created_by }}</p>
+    </section>
+
+    <section>
+        <h2>Report Data</h2>
+        <table>
+            <thead>
+                <tr>
+                    {% for field in report.fields %}
+                    <th>{{ field }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report_data %}
+                <tr>
+                    {% for field in report.fields %}
+                    <td>{{ row.field }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <a href="{% url 'edit_report' report.id %}">Edit Report</a>
+        <a href="{% url 'delete_report' report.id %}">Delete Report</a>
+        <a href="{% url 'export_report' report.id %}">Export Report</a>
+    </section>
+</body>
+</html>

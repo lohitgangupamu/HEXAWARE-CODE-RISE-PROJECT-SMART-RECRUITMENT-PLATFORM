@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Published Jobs</title>
+</head>
+<body>
+    <h1>Published Jobs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Department</th>
+                <th>Date Published</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td>{{ job.title }}</td>
+                <td>{{ job.department }}</td>
+                <td>{{ job.date_published }}</td>
+                <td>
+                    <a href="{% url 'view_job' job.id %}">View</a>
+                    <a href="{% url 'edit_job' job.id %}">Edit</a>
+                    <form action="{% url 'unpublish_job' job.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Unpublish</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

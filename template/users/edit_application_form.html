@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Application Form</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let fieldCounter = ({ form_instance,fields,count,default:0 });
+            
+            // Show the modal when the "Add Field" button is clicked
+            $('#add-field-button').click(function() {
+                $('#field-modal').modal('show');
+            });
+
+            // Add a new field to the table
+            $('#add-field').click(function() {
+                let fieldName = $('#field-name').val();
+                let fieldType = $('#field-type').val();
+                let fieldOptions = $('#field-options').val();
+
+                if (fieldName && fieldType) {
+                    if (['Dropdown', 'Checkbox', 'Radio Button'].includes(fieldType) && !fieldOptions) {
+                        alert('Field options are required for the selected field type.');
+                        return;
+                    }
+                    fieldCounter++;
+                    let options = fieldOptions ? ` (Options: ${fieldOptions})` : '';
+                    $('#field-list').append(`
+                        <tr id="field-row-${fieldCounter}">
+                            <td>${fieldName}${options}</td>
+                            <td>${fieldType}</td>
+                            <td>
+                                <button type="button" onclick="removeField(${fieldCounter})" class="btn btn-danger btn-sm">Delete</button>
+                            </td>
+                        </tr>
+                    `);
+                    $('#field-modal').modal('hide');
+                    $('#field-form')[0].reset();
+                } else {
+                    alert('Field name and type are required.');
+                }
+            });
+
+            // Show or hide the field options input based on field type
+            $('#field-type').change(function() {
+                let fieldType = $(this).val();
+                $('#field-options-group').toggle(['Dropdown', 'Checkbox', 'Radio Button'].includes(fieldType));
+            });
+
+            // Remove a field from the table
+            window.removeField = function(id) {
+                $(`#field-row-${id}`).remove();
+            };
+        });
+    </script>
+</head>
+<body>
+    <h1>Edit Application Form</h1>
+    <form method="post" id="form-edit-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        
+        <div class="form-group">
+            <label for="id_name">Form Name</label>
+            {{ form.name }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_associated_job">Associated Job</label>
+            <select name="associated_job" id="id_associated_job" class="form-control">
+                <option value="">Select a job</option>
+                {% for job in jobs %}
+                    <option value="{{ job.id }}" {% if job.id == form_instance.associated_job.id %}selected{% endif %}>{{ job.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <h2>Form Fields</h2>
+        <table id="field-list" class="table">
+            <!-- Populate existing fields -->
+            {% for field in form_instance.fields.all %}
+                <tr id="field-row-{{ forloop.counter }}">
+                    <td>{{ field.name }} (Options: {{ field.options }})</td>
+                    <td>{{ field.field_type }}</td>
+                    <td>
+                        <button type="button" onclick="removeField((( forloop.counter )))" class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <button type="button" id="add-field-button" class="btn btn-primary">Add Field</button>
+        
+        <input type="hidden" name="form_fields" id="form_fields" value="">
+        
+        <button type="submit" class="btn btn-success">Save Form</button>
+    </form>
+    
+    <!-- Add Field Modal -->
+    <div class="modal fade" id="field-modal" tabindex="-1" role="dialog" aria-labelledby="fieldModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fieldModalLabel">Add New Field</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="field-form">
+                        <div class="form-group">
+                            <label for="field-name">Field Name</label>
+                            <input type="text" class="form-control" id="field-name" placeholder="Enter the field name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="field-type">Field Type</label>
+                            <select class="form-control" id="field-type" required>
+                                <option value="">Select field type</option>
+                                <option value="Text">Text</option>
+                                <option value="Dropdown">Dropdown</option>
+                                <option value="Checkbox">Checkbox</option>
+                                <option value="Radio Button">Radio Button</option>
+                                <option value="Date Picker">Date Picker</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="field-options-group" style="display: none;">
+                            <label for="field-options">Field Options</label>
+                            <input type="text" class="form-control" id="field-options" placeholder="Enter options separated by commas">
+                        </div>
+                        <button type="button" class="btn btn-primary" id="add-field">Add Field</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

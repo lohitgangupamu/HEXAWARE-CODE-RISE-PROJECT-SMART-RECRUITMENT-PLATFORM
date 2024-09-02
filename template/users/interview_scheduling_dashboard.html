@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview Scheduling Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Interview Scheduling Dashboard</h1>
+
+        <!-- Upcoming Interviews Summary -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4>Upcoming Interviews</h4>
+                <p>{{ interviews|length }}</p>
+            </div>
+        </div>
+
+        <!-- Interviews List Table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Applicant Name</th>
+                    <th>Job Title</th>
+                    <th>Interview Date</th>
+                    <th>Interview Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for interview in interviews %}
+                    <tr>
+                        <td>{{ interview.applicant_name }}</td>
+                        <td>{{ interview.job_title }}</td>
+                        <td>{{ interview.interview_date }}</td>
+                        <td>{{ interview.interview_time }}</td>
+                        <td>{{ interview.status }}</td>
+                        <td>
+                            <a href="{% url 'view_interview' interview.id %}" class="btn btn-info btn-sm">View</a>
+                            <a href="{% url 'reschedule_interview' interview.id %}" class="btn btn-warning btn-sm">Reschedule</a>
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="interview_id" value="{{ interview.id }}">
+                                <button type="submit" name="cancel" class="btn btn-danger btn-sm">Cancel</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Schedule New Interview Button -->
+        <a href="{% url 'schedule_interview' %}" class="btn btn-primary">Schedule New Interview</a>
+    </div>
+</body>
+</html>

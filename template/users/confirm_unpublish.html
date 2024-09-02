@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Unpublish</title>
+</head>
+<body>
+    <h1>Are you sure you want to unpublish "{{ job.title }}"?</h1>
+    <form action="{% url 'unpublish_job' job.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, Unpublish</button>
+        <a href="{% url 'published_jobs' %}">Cancel</a>
+    </form>
+</body>
+</html>

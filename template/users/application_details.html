@@ -1,0 +1,58 @@
+<!-- users/templates/users/application_details.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Application Details</h1>
+
+<!-- Applicant Information Section -->
+<div>
+    <h2>Applicant Information</h2>
+    <p><strong>Name:</strong> {{ application.applicant_name }}</p>
+    <p><strong>Position:</strong> {{ application.position }}</p>
+    <p><strong>Source:</strong> {{ application.source }}</p>
+    <p><strong>Date Applied:</strong> {{ application.date_applied }}</p>
+</div>
+
+<!-- Application Status Section -->
+<div>
+    <h2>Application Status</h2>
+    <p><strong>Current Status:</strong> {{ application.current_status }}</p>
+
+    <!-- Status History Table -->
+    <h3>Status History</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status in status_history %}
+                <tr>
+                    <td>{{ status.date }}</td>
+                    <td>{{ status.status }}</td>
+                    <td>{{ status.notes }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No status history available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Actions Section -->
+<div>
+    <h2>Actions</h2>
+    <!-- Example link in your application_details.html -->
+
+<a href="{% url 'update_status' application_id=application.id %}">Update Status</a>
+
+    <a href="{% url 'compose_message' application.id %}" class="btn btn-secondary">Send Message</a>
+</div>
+
+{% endblock %}

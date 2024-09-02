@@ -1,0 +1,17 @@
+<!-- users/templates/users/compose_message.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Compose Message</h1>
+
+<form method="post" action="{% url 'compose_message' application.id %}">
+    {% csrf_token %}
+    <div>
+        <label for="message">Message:</label>
+        <textarea name="message" id="message" required></textarea>
+    </div>
+    <button type="submit">Send Message</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Interview Details</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                Applicant Information
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ interview.applicant_name }}</p>
+                <p><strong>Email:</strong> {{ interview.applicant_email }}</p>
+                <p><strong>Phone:</strong> {{ interview.applicant_phone }}</p>
+                <p><strong>Resume:</strong> <a href="{{ interview.resume_url }}" download>Download Resume</a></p>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                Job Information
+            </div>
+            <div class="card-body">
+                <p><strong>Job Title:</strong> {{ interview.job_title }}</p>
+                <p><strong>Department:</strong> {{ interview.department }}</p>
+                <p><strong>Location:</strong> {{ interview.location }}</p>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                Application Status
+            </div>
+            <div class="card-body">
+                <p><strong>Current Status:</strong> {{ interview.status }}</p>
+                <form method="post" action="{% url 'view_interview' interview.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="status">Change Status</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="Applied" {% if interview.status == 'Applied' %}selected{% endif %}>Applied</option>
+                            <option value="In Review" {% if interview.status == 'In Review' %}selected{% endif %}>In Review</option>
+                            <option value="Interview" {% if interview.status == 'Interview' %}selected{% endif %}>Interview</option>
+                            <option value="Offered" {% if interview.status == 'Offered' %}selected{% endif %}>Offered</option>
+                            <option value="Rejected" {% if interview.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                    </div>
+                    <button type="submit" name="save_status" class="btn btn-primary">Save Status</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                Notes
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'view_interview' interview.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Add notes about the application">{{ interview.notes }}</textarea>
+                    </div>
+                    <button type="submit" name="save_notes" class="btn btn-primary">Save Notes</button>
+                </form>
+            </div>
+        </div>
+
+        <a href="{% url 'interview_scheduling_dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+    </div>
+</body>
+</html>

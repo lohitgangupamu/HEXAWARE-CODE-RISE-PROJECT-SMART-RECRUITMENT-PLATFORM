@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recruitment Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        form label {
+            margin-right: 10px;
+        }
+        form input[type="date"] {
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .metrics, .charts, .applications-table {
+            margin-bottom: 20px;
+        }
+        .metrics p, .charts canvas {
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        table th {
+            background-color: #f4f4f4;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recruitment Dashboard</h1>
+
+        <!-- Date Range Picker -->
+        <form method="get" action="{% url 'dashboard' %}">
+            <label for="start_date">Date Range:</label>
+            <input type="date" name="start_date" id="start_date" value="{{ request.GET.start_date }}">
+            <input type="date" name="end_date" id="end_date" value="{{ request.GET.end_date }}">
+            <button type="submit">Refresh</button>
+        </form>
+
+        <!-- Key Metrics -->
+        <div class="metrics">
+            <h2>Key Metrics</h2>
+            <p>Total Applications: {{ total_applications }}</p>
+            <p>Applications in Progress: {{ applications_in_progress }}</p>
+            <p>Hired Candidates: {{ hired_candidates }}</p>
+            <p>Rejected Candidates: {{ rejected_candidates }}</p>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts">
+            <h2>Charts</h2>
+            <!-- Applications Over Time Chart -->
+            <canvas id="applicationsOverTimeChart"></canvas>
+            
+            <!-- Applications by Source Chart -->
+            <canvas id="applicationsBySourceChart"></canvas>
+            
+            <!-- Applications by Status Chart -->
+            <canvas id="applicationsByStatusChart"></canvas>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="applications-table">
+            <h2>Applications Table</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Applicant Name</th>
+                        <th>Position</th>
+                        <th>Source</th>
+                        <th>Date Applied</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in applications %}
+                        <tr>
+                            <td>{{ application.applicant_name }}</td>
+                            <td>{{ application.position }}</td>
+                            <td>{{ application.source }}</td>
+                            <td>{{ application.date_applied }}</td>
+                            <td>{{ application.status }}</td>
+                            <td><a href="{% url 'application_details' application.id %}">View Details</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Include Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Applications Over Time Chart
+                var ctx = document.getElementById('applicationsOverTimeChart').getContext('2d');
+                var applicationsOverTimeChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: JSON.parse('{{ applications_over_time_labels|safe }}'),
+                        datasets: [{
+                            label: 'Applications Over Time',
+                            data: JSON.parse('{{ applications_over_time_values|safe }}'),
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { beginAtZero: true },
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+
+                // Applications by Source Chart
+                var ctx2 = document.getElementById('applicationsBySourceChart').getContext('2d');
+                var applicationsBySourceChart = new Chart(ctx2, {
+                    type: 'pie',
+                    data: {
+                        labels: JSON.parse('{{ applications_by_source_labels|safe }}'),
+                        datasets: [{
+                            label: 'Applications by Source',
+                            data: JSON.parse('{{ applications_by_source_values|safe }}'),
+                            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)'],
+                            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+
+                // Applications by Status Chart
+                var ctx3 = document.getElementById('applicationsByStatusChart').getContext('2d');
+                var applicationsByStatusChart = new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                        labels: JSON.parse('{{ applications_by_status_labels|safe }}'),
+                        datasets: [{
+                            label: 'Applications by Status',
+                            data: JSON.parse('{{ applications_by_status_values|safe }}'),
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { beginAtZero: true },
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

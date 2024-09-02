@@ -1,0 +1,38 @@
+<!-- users/templates/users/interview_details.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Interview Details</h1>
+
+<div>
+    <h2>Applicant Information</h2>
+    <p><strong>Name:</strong> {{ interview.applicant.name }}</p>
+    <p><strong>Email:</strong> {{ interview.applicant.email }}</p>
+    <p><strong>Phone:</strong> {{ interview.applicant.phone }}</p>
+</div>
+
+<div>
+    <h2>Job Information</h2>
+    <p><strong>Job Title:</strong> {{ interview.job_posting.title }}</p>
+    <p><strong>Department:</strong> {{ interview.job_posting.department }}</p>
+    <p><strong>Location:</strong> {{ interview.job_posting.location }}</p>
+</div>
+
+<div>
+    <h2>Interview Information</h2>
+    <p><strong>Interview Date:</strong> {{ interview.interview_date }}</p>
+    <p><strong>Interview Time:</strong> {{ interview.interview_time }}</p>
+    <p><strong>Interview Mode:</strong> {{ interview.interview_mode }}</p>
+    {% if interview.interview_mode == "In-Person" %}
+        <p><strong>Interview Location:</strong> {{ interview.interview_location }}</p>
+    {% endif %}
+    <p><strong>Interviewers:</strong> {{ interview.interviewers.all|join:", " }}</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="reschedule">Reschedule Interview</button>
+    <button type="submit" name="cancel">Cancel Interview</button>
+</form>
+{% endblock %}

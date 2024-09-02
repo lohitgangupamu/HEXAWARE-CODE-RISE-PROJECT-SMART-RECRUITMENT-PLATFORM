@@ -1,0 +1,39 @@
+<!-- templates/schedule_interview.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Interview</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/scripts.js' %}"></script>
+</head>
+<body>
+    <h1>Schedule Interview</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Schedule Interview</button>
+    </form>
+    <script>
+        // JavaScript to show/hide interview location based on interview mode
+        document.addEventListener('DOMContentLoaded', function () {
+            const interviewModeField = document.querySelector('select[name="interview_mode"]');
+            const interviewLocationField = document.querySelector('input[name="interview_location"]').closest('div');
+
+            interviewModeField.addEventListener('change', function () {
+                if (this.value === 'In-Person') {
+                    interviewLocationField.style.display = 'block';
+                } else {
+                    interviewLocationField.style.display = 'none';
+                }
+            });
+
+            // Initial check in case of pre-filled value
+            if (interviewModeField.value === 'In-Person') {
+                interviewLocationField.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
